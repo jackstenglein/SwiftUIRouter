@@ -29,14 +29,21 @@ import SwiftUI
 /// - Note: A Router's base path (root) is always `/`.
 public struct Router<Content: View>: View {
 
-	@StateObject private var navigator: Navigator
+	@ObservedObject private var navigator: Navigator
 	private let content: Content
+    
+    /// Initialize a Router environment.
+    /// - Parameter initialPath: The initial path the `Router` should start at once initialized.
+    /// - Parameter content: Content views to render inside the Router environment.
+    public init(initialPath: String = "/", @ViewBuilder content: () -> Content) {
+        self.init(navigator: Navigator(initialPath: initialPath), content: content)
+    }
 
 	/// Initialize a Router environment.
-	/// - Parameter initialPath: The initial path the `Router` should start at once initialized.
+	/// - Parameter navigator: The Navigator that the `Router` should use once initialized.
 	/// - Parameter content: Content views to render inside the Router environment.
-	public init(initialPath: String = "/" ,@ViewBuilder content: () -> Content) {
-		_navigator = StateObject(wrappedValue: Navigator(initialPath: initialPath))
+    public init(navigator: Navigator, @ViewBuilder content: () -> Content) {
+        self.navigator = navigator
 		self.content = content()
 	}
 	
